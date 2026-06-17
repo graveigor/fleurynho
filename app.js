@@ -1,5 +1,5 @@
 /* ============================================================
-   Sofia — Assistente Virtual Humanizada do Grupo Fleury
+   Fleurynho — Assistente Virtual Humanizada do Grupo Fleury
    Motor de DIÁLOGO por fluxos (100% offline / demo completo).
    Em produção: trocar a camada de fluxos por orquestração com a
    API Claude + integrações (agendamento, laudos, convênios).
@@ -207,7 +207,7 @@ function process(texto) {
   // 1) temas sensíveis -> transbordo humanizado
   if (sensiveis.some((p) => t.includes(p))) {
     state.flow = null;
-    botSay('Sinto muito por isso, e quero que você seja muito bem cuidado(a). 💙\nEsse assunto merece a atenção de um(a) atendente humano(a). Vou te transferir agora mesmo, tudo bem?', ['Confirmar transferência', 'Continuar com a Sofia']);
+    botSay('Sinto muito por isso, e quero que você seja muito bem cuidado(a). 💙\nEsse assunto merece a atenção de um(a) atendente humano(a). Vou te transferir agora mesmo, tudo bem?', ['Confirmar transferência', 'Continuar com o Fleurynho']);
     state.flow = 'transbordo';
     return;
   }
@@ -308,7 +308,7 @@ function renderQuick(ops = []) {
   });
 }
 
-/* fala da Sofia com digitação simulada */
+/* fala da Fleurynho com digitação simulada */
 function botSay(texto, quick = []) {
   renderQuick([]);
   showTyping();
@@ -352,7 +352,7 @@ function greet() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMsg('Olá! 😊 Eu sou a *Sofia*, assistente virtual do Fleury.\nPosso te ajudar com agendamentos, resultados, preparo de exames, convênios e unidades — 24h por dia. Por onde começamos?', 'bot');
+    addMsg('Olá! 😊 Eu sou o *Fleurynho*, assistente virtual do Fleury.\nPosso te ajudar com agendamentos, resultados, preparo de exames, convênios e unidades — 24h por dia. Por onde começamos?', 'bot');
     renderQuick(HOME);
   }, 800);
 }

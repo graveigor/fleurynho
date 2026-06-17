@@ -1,4 +1,4 @@
-# Sofia — IA de Atendimento Humanizado · Fleury 🤖💙
+# Fleurynho — IA de Atendimento Humanizado · Fleury 🤖💙
 
 Landing page + chatbot funcional para o desafio de **atendimento automatizado e humanizado via IA**
 do Grupo Fleury. Feito em **HTML + JavaScript + Tailwind CSS**.
@@ -10,7 +10,7 @@ Abra `index.html` no navegador (duplo clique). Não precisa de servidor nem buil
 ## ✨ O que o site entrega
 - **Landing page animada**: hero com blobs animados, logo Fleury (SVG), contadores de impacto,
   efeitos de revelação no scroll e identidade visual da marca.
-- **Chatbot flutuante (botão 💬 no canto)**: a assistente *Sofia* responde com tom humanizado sobre
+- **Chatbot flutuante (botão 💬 no canto)**: a assistente *Fleurynho* responde com tom humanizado sobre
   agendamento, resultados, preparo de exames, convênios e unidades, com:
   - digitação simulada e respostas rápidas (quick replies);
   - **transbordo para atendente humano** em casos sensíveis (reclamações, urgências).
