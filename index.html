@@ -56,9 +56,9 @@
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-fleury-ink/70">
         <a href="#sobre" class="hover:text-fleury transition">A Sofia</a>
-        <a href="#numeros" class="hover:text-fleury transition">Impacto</a>
-        <a href="#projeto" class="hover:text-fleury transition">O Projeto</a>
+        <a href="#projeto" class="hover:text-fleury transition">Projeto</a>
         <a href="#orcamento" class="hover:text-fleury transition">Orçamento</a>
+        <a href="#riscos" class="hover:text-fleury transition">Riscos & KPIs</a>
       </nav>
       <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-fleury/30 transition">
         💬 Falar com a Sofia
@@ -94,11 +94,11 @@
           </a>
         </div>
         <div class="flex items-center gap-6 mt-10 text-sm text-fleury-ink/60 reveal" style="animation-delay:.4s">
-          <div><b class="text-fleury text-xl">70%</b> contatos resolvidos</div>
+          <div><b class="text-fleury text-xl">-40%</b> atendimento humano</div>
           <div class="w-px h-8 bg-black/10"></div>
           <div><b class="text-fleury text-xl">24/7</b> disponível</div>
           <div class="w-px h-8 bg-black/10"></div>
-          <div><b class="text-fleury text-xl">+CSAT</b> satisfação</div>
+          <div><b class="text-fleury text-xl">7 sem</b> para implantar</div>
         </div>
       </div>
 
@@ -152,10 +152,10 @@
   <!-- ===== NÚMEROS ===== -->
   <section id="numeros" class="py-24 bg-gradient-to-br from-fleury to-fleury-dark text-white">
     <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
-      <div class="reveal"><div class="text-5xl font-extrabold counter" data-target="70">0</div><div class="text-white/70 mt-2">% contatos automatizados</div></div>
-      <div class="reveal" style="animation-delay:.1s"><div class="text-5xl font-extrabold counter" data-target="40">0</div><div class="text-white/70 mt-2">% menos chamados repetitivos</div></div>
-      <div class="reveal" style="animation-delay:.2s"><div class="text-5xl font-extrabold"><span class="counter" data-target="24">0</span>/7</div><div class="text-white/70 mt-2">horas de atendimento</div></div>
-      <div class="reveal" style="animation-delay:.3s"><div class="text-5xl font-extrabold"><span class="counter" data-target="4">0</span>m</div><div class="text-white/70 mt-2">para operação plena</div></div>
+      <div class="reveal"><div class="text-5xl font-extrabold"><span class="counter" data-target="40">0</span>%</div><div class="text-white/70 mt-2">menos atendimento humano</div></div>
+      <div class="reveal" style="animation-delay:.1s"><div class="text-5xl font-extrabold"><span class="counter" data-target="24">0</span>/7</div><div class="text-white/70 mt-2">horas de atendimento</div></div>
+      <div class="reveal" style="animation-delay:.2s"><div class="text-5xl font-extrabold"><span class="counter" data-target="7">0</span></div><div class="text-white/70 mt-2">semanas para implantar</div></div>
+      <div class="reveal" style="animation-delay:.3s"><div class="text-5xl font-extrabold"><span class="counter" data-target="3">0</span></div><div class="text-white/70 mt-2">canais: WhatsApp, e-mail e chat</div></div>
     </div>
   </section>
 
@@ -163,40 +163,41 @@
   <section id="projeto" class="py-28 max-w-7xl mx-auto px-6">
     <div class="text-center mb-16 reveal">
       <span class="text-fleury font-bold text-sm tracking-widest">O PROJETO</span>
-      <h2 class="text-4xl font-extrabold mt-2">Da ideia à operação em 16 semanas</h2>
+      <h2 class="text-4xl font-extrabold mt-2">Da ideia à operação em 7 semanas</h2>
+      <p class="text-fleury-ink/60 mt-3 max-w-2xl mx-auto">Chatbot inteligente para o SAC (WhatsApp, e-mail e chat no site): responde FAQ, consulta status de pedidos/contratos, direciona casos complexos para humano e aprende com as interações.</p>
     </div>
 
     <!-- Timeline -->
     <div class="grid lg:grid-cols-3 gap-12">
       <div class="lg:col-span-2">
         <ol class="relative border-l-2 border-fleury/20 ml-3 space-y-8">
-          <li class="reveal pl-8 relative"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 1–2 · Descoberta</b><p class="text-fleury-ink/60 text-sm">Mapeamento de intenções e análise do histórico do SAC.</p></li>
-          <li class="reveal pl-8 relative" style="animation-delay:.05s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 3–4 · Design</b><p class="text-fleury-ink/60 text-sm">Persona, fluxos, tom de voz e roteiros humanizados.</p></li>
-          <li class="reveal pl-8 relative" style="animation-delay:.1s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 5–9 · Desenvolvimento</b><p class="text-fleury-ink/60 text-sm">Integração da IA (Claude), APIs internas e base de conhecimento.</p></li>
-          <li class="reveal pl-8 relative" style="animation-delay:.15s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 10–12 · Testes & Validação</b><p class="text-fleury-ink/60 text-sm">Validação clínica, conformidade LGPD e testes com usuários.</p></li>
-          <li class="reveal pl-8 relative" style="animation-delay:.2s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 13–14 · Piloto</b><p class="text-fleury-ink/60 text-sm">10% do tráfego em uma região, com monitoramento próximo.</p></li>
-          <li class="reveal pl-8 relative" style="animation-delay:.25s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 15–16 · Rollout</b><p class="text-fleury-ink/60 text-sm">Expansão gradual para todos os canais.</p></li>
+          <li class="reveal pl-8 relative"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Semana 1 · Levantamento de requisitos</b><p class="text-fleury-ink/60 text-sm">Mapeamento de fluxos, FAQ e integrações necessárias.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.05s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Semanas 2–4 · Desenvolvimento do bot</b><p class="text-fleury-ink/60 text-sm">Construção da IA, base de conhecimento e integração com os canais.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.1s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Semana 5 · Testes internos</b><p class="text-fleury-ink/60 text-sm">Validação de respostas, fluxos e conformidade LGPD.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.15s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Semana 6 · Ajustes e melhorias</b><p class="text-fleury-ink/60 text-sm">Refinamento do tom humanizado e correções a partir dos testes.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.2s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Semana 7 · Implantação oficial</b><p class="text-fleury-ink/60 text-sm">Go-live nos canais e início do monitoramento de KPIs.</p></li>
         </ol>
+        <p class="text-sm text-fleury-ink/50 mt-6 ml-3">Tempo total estimado: <b class="text-fleury">~7 semanas</b>.</p>
       </div>
 
       <!-- Setores -->
       <div class="reveal">
         <h3 class="font-bold text-lg mb-4">Setores envolvidos</h3>
         <div class="space-y-3">
-          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🎧</span><div><b class="block text-sm">Relacionamento / SAC</b><span class="text-xs text-fleury-ink/50">Dono do produto e tom de voz</span></div></div>
-          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">💻</span><div><b class="block text-sm">TI & Dados</b><span class="text-xs text-fleury-ink/50">Integrações, IA e infraestrutura</span></div></div>
-          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🔬</span><div><b class="block text-sm">Operações de Exames</b><span class="text-xs text-fleury-ink/50">Regras de agendamento e preparo</span></div></div>
-          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">⚖️</span><div><b class="block text-sm">Jurídico / Compliance</b><span class="text-xs text-fleury-ink/50">LGPD e dados sensíveis</span></div></div>
-          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🩺</span><div><b class="block text-sm">Médico / Qualidade</b><span class="text-xs text-fleury-ink/50">Validação clínica das respostas</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">💻</span><div><b class="block text-sm">TI</b><span class="text-xs text-fleury-ink/50">Desenvolvimento e integração</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🎧</span><div><b class="block text-sm">Atendimento ao Cliente</b><span class="text-xs text-fleury-ink/50">Definição dos fluxos</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">⚖️</span><div><b class="block text-sm">Jurídico</b><span class="text-xs text-fleury-ink/50">Validação de dados e LGPD</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">📣</span><div><b class="block text-sm">Marketing</b><span class="text-xs text-fleury-ink/50">Tom de comunicação</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">💵</span><div><b class="block text-sm">Financeiro</b><span class="text-xs text-fleury-ink/50">Análise de custos</span></div></div>
         </div>
       </div>
     </div>
 
     <!-- Impacto -->
     <div class="grid md:grid-cols-3 gap-6 mt-20">
-      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury"><b class="text-fleury">Curto prazo · 0–3m</b><p class="text-sm text-fleury-ink/70 mt-2">Atendimento 24/7, fim das filas e respostas instantâneas.</p></div>
-      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.1s"><b class="text-fleury">Médio prazo · 3–9m</b><p class="text-sm text-fleury-ink/70 mt-2">−40% de chamados repetitivos; equipe foca em casos complexos.</p></div>
-      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.2s"><b class="text-fleury">Longo prazo · 9m+</b><p class="text-sm text-fleury-ink/70 mt-2">Menor custo por atendimento e escala sem aumentar a equipe.</p></div>
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury"><b class="text-fleury">Curto prazo · 1–3 meses</b><p class="text-sm text-fleury-ink/70 mt-2">Redução de até 40% no volume de atendimentos humanos e resposta imediata ao cliente.</p></div>
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.1s"><b class="text-fleury">Médio prazo · 3–6 meses</b><p class="text-sm text-fleury-ink/70 mt-2">Aumento da satisfação do cliente e padronização do atendimento.</p></div>
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.2s"><b class="text-fleury">Longo prazo · 6+ meses</b><p class="text-sm text-fleury-ink/70 mt-2">Redução de custos, base de dados estratégica e escalabilidade do atendimento.</p></div>
     </div>
   </section>
 
@@ -205,17 +206,60 @@
     <div class="max-w-4xl mx-auto px-6">
       <div class="text-center mb-12 reveal">
         <span class="text-rose-300 font-bold text-sm tracking-widest">INVESTIMENTO</span>
-        <h2 class="text-4xl font-extrabold mt-2">Orçamento estimado · Ano 1</h2>
-        <p class="text-white/60 mt-3">Payback estimado em 12–18 meses pela redução de custo do SAC.</p>
+        <h2 class="text-4xl font-extrabold mt-2">Orçamento estimado</h2>
+        <p class="text-white/60 mt-3">Baixo investimento inicial com modelo de custo mensal previsível.</p>
       </div>
       <div class="reveal bg-white/5 rounded-3xl p-8 backdrop-blur border border-white/10">
         <div class="space-y-4">
-          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Desenvolvimento e integrações</span><b>R$ 320.000</b></div>
-          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Licenças de IA / API (Claude)</span><b>R$ 90.000</b></div>
-          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Infraestrutura cloud & segurança</span><b>R$ 60.000</b></div>
-          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Treinamento & gestão de mudança</span><b>R$ 50.000</b></div>
-          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Contingência (15%)</span><b>R$ 78.000</b></div>
-          <div class="flex justify-between items-center text-xl pt-2"><span class="font-bold">Total</span><b class="text-rose-300 text-2xl">R$ 598.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Plataforma de chatbot IA</span><b>R$ 2.000/mês</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Integração e desenvolvimento <span class="text-white/50 text-sm">(único)</span></span><b>R$ 8.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Treinamento de equipe</span><b>R$ 1.500</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Manutenção mensal</span><b>R$ 1.000/mês</b></div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <div class="bg-white/10 rounded-2xl p-5 text-center"><div class="text-white/60 text-sm">Investimento inicial</div><b class="text-rose-300 text-2xl">~R$ 9.500</b></div>
+          <div class="bg-white/10 rounded-2xl p-5 text-center"><div class="text-white/60 text-sm">Custo mensal</div><b class="text-rose-300 text-2xl">~R$ 3.000</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RISCOS & KPIs ===== -->
+  <section id="riscos" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16">
+      <!-- Riscos -->
+      <div>
+        <div class="mb-8 reveal">
+          <span class="text-fleury font-bold text-sm tracking-widest">⚠️ RISCOS & MITIGAÇÕES</span>
+          <h2 class="text-3xl font-extrabold mt-2">Antecipando desafios</h2>
+        </div>
+        <div class="space-y-4">
+          <div class="reveal flex gap-4 p-5 rounded-2xl border border-black/5 bg-white hover:shadow-md transition">
+            <span class="text-2xl">🤖</span>
+            <div><b class="block">Respostas incorretas</b><span class="text-sm text-fleury-ink/60">Treinamento contínuo da IA e revisão das interações.</span></div>
+          </div>
+          <div class="reveal flex gap-4 p-5 rounded-2xl border border-black/5 bg-white hover:shadow-md transition" style="animation-delay:.1s">
+            <span class="text-2xl">👥</span>
+            <div><b class="block">Resistência da equipe</b><span class="text-sm text-fleury-ink/60">Capacitação e treinamento, posicionando a IA como apoio.</span></div>
+          </div>
+          <div class="reveal flex gap-4 p-5 rounded-2xl border border-black/5 bg-white hover:shadow-md transition" style="animation-delay:.2s">
+            <span class="text-2xl">🔐</span>
+            <div><b class="block">Problemas com dados (LGPD)</b><span class="text-sm text-fleury-ink/60">Validação jurídica e compliance desde o início do projeto.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div>
+        <div class="mb-8 reveal">
+          <span class="text-fleury font-bold text-sm tracking-widest">📈 INDICADORES DE SUCESSO</span>
+          <h2 class="text-3xl font-extrabold mt-2">Como mediremos resultado</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="reveal p-6 rounded-2xl bg-fleury-light"><div class="text-3xl mb-2">⏱️</div><b class="block">TMA</b><span class="text-sm text-fleury-ink/60">Tempo médio de resposta</span></div>
+          <div class="reveal p-6 rounded-2xl bg-fleury-light" style="animation-delay:.1s"><div class="text-3xl mb-2">✅</div><b class="block">Resolução automática</b><span class="text-sm text-fleury-ink/60">% resolvido sem humano</span></div>
+          <div class="reveal p-6 rounded-2xl bg-fleury-light" style="animation-delay:.2s"><div class="text-3xl mb-2">😊</div><b class="block">NPS / CSAT</b><span class="text-sm text-fleury-ink/60">Satisfação do cliente</span></div>
+          <div class="reveal p-6 rounded-2xl bg-fleury-light" style="animation-delay:.3s"><div class="text-3xl mb-2">💸</div><b class="block">Custo operacional</b><span class="text-sm text-fleury-ink/60">Redução de custos</span></div>
         </div>
       </div>
     </div>
