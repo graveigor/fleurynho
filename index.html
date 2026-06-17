@@ -465,9 +465,9 @@
 
   <div id="chatWindow" class="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-3rem)] bg-white rounded-[28px] shadow-2xl border border-black/10 flex-col overflow-hidden hidden">
     <!-- header -->
-    <div class="bg-gradient-to-r from-fleury to-fleury-dark text-white p-4 flex items-center gap-3">
-      <div class="w-11 h-11 rounded-full bg-white/20 grid place-items-center text-2xl">🤖</div>
-      <div class="flex-1"><div class="font-bold leading-none">Fleurynho</div><div class="text-xs text-white/80">Assistente virtual · online</div></div>
+    <div id="chatHeader" class="bg-gradient-to-r from-fleury to-fleury-dark text-white p-4 flex items-center gap-3">
+      <div id="chatAvatar" class="w-11 h-11 rounded-full bg-white/20 grid place-items-center text-2xl">🤖</div>
+      <div class="flex-1"><div id="chatName" class="font-bold leading-none">Fleurynho</div><div id="chatSub" class="text-xs text-white/80">Assistente virtual · online</div></div>
       <button onclick="transferHuman()" title="Atendente humano" class="text-white/80 hover:text-white text-sm">👤</button>
       <button onclick="closeChat()" class="text-white/80 hover:text-white text-xl leading-none">✕</button>
     </div>

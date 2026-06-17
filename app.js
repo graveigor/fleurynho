@@ -263,21 +263,32 @@ const sensiveis = ['reclamacao', 'processar', 'grave', 'cancer', 'urgente', 'eme
 function process(texto) {
   const t = norm(texto);
 
-  // 1) temas sensíveis -> transbordo humanizado
+  // 0) já está com um atendente humano (ou na fila) -> trata antes de tudo
+  if (state.flow === 'atendenteAtivo') return respostaAtendente(texto);
+  if (state.flow === 'fila') return botSay('Só um instante, já estou te conectando com um atendente… 💙', []);
+
+  // confirmação: chatbot ou atendente?
+  if (state.flow === 'confirmAtendente') {
+    if (t.includes('chatbot') || t.includes('continuar') || t.includes('fleurynho')) {
+      state.flow = null;
+      return botSay('Combinado! Sigo com você. 🤖 Como posso ajudar?', HOME);
+    }
+    return conectarAtendente();
+  }
+
+  // 1) temas sensíveis -> sugere atendente humano
   if (sensiveis.some((p) => t.includes(p))) {
-    state.flow = null;
-    botSay('Sinto muito por isso, e quero que você seja muito bem cuidado(a). 💙\nEsse assunto merece a atenção de um(a) atendente humano(a). Vou te transferir agora mesmo, tudo bem?', ['Confirmar transferência', 'Continuar com o Fleurynho']);
     state.flow = 'transbordo';
-    return;
+    return botSay('Sinto muito por isso, e quero que você seja muito bem cuidado(a). 💙\nEsse assunto merece a atenção de um(a) atendente humano(a). Quer que eu te transfira agora?', ['Confirmar transferência', 'Continuar com o Fleurynho']);
   }
   if (state.flow === 'transbordo') {
     state.flow = null;
-    if (t.includes('confirmar')) return filaHumano();
+    if (t.includes('confirmar')) return conectarAtendente();
     return botSay('Tudo bem, sigo com você! 😊 Como posso ajudar?', HOME);
   }
 
-  // 2) pedir atendente a qualquer momento
-  if (t.includes('atendente') || t.includes('humano')) { state.flow = null; return transferHuman(); }
+  // 2) pedir atendente a qualquer momento -> confirma a escolha
+  if (t.includes('atendente') || t.includes('humano')) { state.flow = null; return pedirConfirmacaoAtendente(); }
 
   // 3) encerrar / despedir
   if (despede.some((p) => t.includes(p)) || t === 'cancelar') {
@@ -385,13 +396,73 @@ function enviar(texto) {
   setTimeout(() => process(texto), 250);
 }
 
-/* transbordo humano */
-function transferHuman() {
-  botSay('Sem problemas! 😊 Para adiantar à equipe, me diz rapidamente o motivo do contato:', ['Agendamento', 'Resultado', 'Reclamação', 'Outro assunto']);
-  state.flow = 'transbordo';
+/* ===================== ATENDIMENTO HUMANO ===================== */
+const ATENDENTES = ['Ana', 'Bruno', 'Carla', 'Diego', 'Marina'];
+const UNIDADES_TEL = {
+  default: { nome: 'Unidade Av. Paulista - SP', tel: '(11) 4004-7000' },
+  'paulista': { nome: 'Unidade Av. Paulista - SP', tel: '(11) 4004-7000' },
+  'ibirapuera': { nome: 'Unidade Ibirapuera - SP', tel: '(11) 4004-7100' },
+  'barra': { nome: 'Unidade Barra - RJ', tel: '(21) 4004-7200' },
+};
+function unidadeAtual() {
+  const n = norm(ctx.unidade || '');
+  for (const k in UNIDADES_TEL) if (k !== 'default' && n.includes(k)) return UNIDADES_TEL[k];
+  return UNIDADES_TEL.default;
 }
-function filaHumano() {
-  botSay('Pronto! Você está na fila para atendimento humano. 👤\nTempo médio de espera: ~2 minutos. Obrigada pela paciência! 💙', []);
+
+/* pergunta de confirmação: chatbot ou atendente? */
+function pedirConfirmacaoAtendente() {
+  setChatPersona('bot');
+  state.flow = 'confirmAtendente';
+  botSay('Você prefere falar com um *atendente humano* ou continuar comigo, o Fleurynho? 😊\nÉ só confirmar abaixo:', ['✅ Sim, falar com atendente', '🤖 Continuar com o chatbot']);
+}
+
+/* conecta de fato a um atendente humano (simulado) */
+function conectarAtendente() {
+  state.flow = 'fila';
+  botSay('Perfeito! Estou te transferindo para um de nossos atendentes. 👤\nTempo médio de espera: ~2 minutos. Já já alguém assume por aqui. 💙', []);
+  const at = ATENDENTES[Math.floor(Math.random() * ATENDENTES.length)];
+  const u = unidadeAtual();
+  setTimeout(() => {
+    setChatPersona('humano', at);
+    state.flow = 'atendenteAtivo';
+    botSay(`Oi! Aqui é a *${at}*, do atendimento Fleury 😊\nJá assumi a sua conversa. Em que posso te ajudar?\n\n☎️ Se preferir falar por telefone, ligue para a ${u.nome}: *${u.tel}*.`, ['Sobre meu agendamento', 'Sobre um resultado', 'Voltar ao Fleurynho']);
+  }, 2600);
+}
+
+/* respostas do atendente humano (simuladas) */
+function respostaAtendente(t) {
+  if (norm(t).includes('voltar')) {
+    setChatPersona('bot');
+    state.flow = null;
+    return botSay('Sem problemas! Voltando para o assistente Fleurynho. 🤖 Como posso te ajudar?', HOME);
+  }
+  const respostas = [
+    'Certo, deixa eu verificar isso para você. Um momentinho, por favor… 🙂',
+    'Entendi! Já estou consultando aqui no sistema para te dar o retorno certinho.',
+    'Obrigada por aguardar! Pode me confirmar seu nome completo e data de nascimento, por gentileza?',
+    'Perfeito, registrei aqui. Posso te ajudar com mais alguma coisa? 💙',
+  ];
+  const r = respostas[Math.min(ctx.atIdx || 0, respostas.length - 1)];
+  ctx.atIdx = (ctx.atIdx || 0) + 1;
+  botSay(r, ['Voltar ao Fleurynho']);
+}
+
+/* troca a identidade visual do cabeçalho do chat */
+function setChatPersona(tipo, nome) {
+  const av = $('#chatAvatar'), nm = $('#chatName'), sb = $('#chatSub'), hd = $('#chatHeader');
+  if (!av) return;
+  if (tipo === 'humano') {
+    av.textContent = '🧑‍💼';
+    nm.textContent = nome ? `${nome} · Atendente` : 'Atendente Fleury';
+    sb.textContent = 'Atendimento humano · online';
+    hd.className = 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-4 flex items-center gap-3';
+  } else {
+    av.textContent = '🤖';
+    nm.textContent = 'Fleurynho';
+    sb.textContent = 'Assistente virtual · online';
+    hd.className = 'bg-gradient-to-r from-fleury to-fleury-dark text-white p-4 flex items-center gap-3';
+  }
 }
 
 /* ===================== WIDGET ===================== */
@@ -408,6 +479,7 @@ function closeChat() {
   $('#chatFab').classList.remove('hidden');
 }
 function greet() {
+  setChatPersona('bot');
   showTyping();
   setTimeout(() => {
     hideTyping();
@@ -419,7 +491,13 @@ function greet() {
 $('#composer').addEventListener('submit', (e) => { e.preventDefault(); enviar(inputEl.value); });
 window.openChat = openChat;
 window.closeChat = closeChat;
-window.transferHuman = () => { started = true; openChat(); state.flow = null; addMsg('Falar com atendente', 'user'); transferHuman(); };
+window.transferHuman = () => {
+  started = true;
+  openChat();
+  state.flow = null;
+  addMsg('Quero falar com um atendente', 'user');
+  pedirConfirmacaoAtendente();
+};
 
 /* ===================== ANIMAÇÕES DE SCROLL ===================== */
 const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
