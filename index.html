@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sofia · IA de Atendimento Humanizado — Fleury</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fleury: { DEFAULT: '#e30613', dark: '#b8050f', light: '#fde8e9', ink: '#1a1830' },
+          },
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          keyframes: {
+            float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
+            blob: { '0%,100%': { transform: 'translate(0,0) scale(1)' }, '33%': { transform: 'translate(30px,-40px) scale(1.1)' }, '66%': { transform: 'translate(-20px,20px) scale(0.95)' } },
+            pulseLine: { '0%': { strokeDashoffset: 1000 }, '100%': { strokeDashoffset: 0 } },
+            fadeUp: { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            blob: 'blob 14s ease-in-out infinite',
+            pulseLine: 'pulseLine 3s ease-in-out infinite',
+            fadeUp: 'fadeUp 0.7s ease forwards',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .reveal { opacity: 0; }
+    .reveal.in { animation: fadeUp 0.7s ease forwards; }
+    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); }
+    .text-gradient { background: linear-gradient(90deg,#e30613,#ff5a4d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .shimmer { background: linear-gradient(110deg,#e30613 30%,#ff7a6e 50%,#e30613 70%); background-size: 200% 100%; animation: shimmer 3s linear infinite; -webkit-background-clip: text; background-clip: text; color: transparent; }
+    ::-webkit-scrollbar { width: 10px; } ::-webkit-scrollbar-thumb { background: #e3061355; border-radius: 8px; }
+    .chat-scroll::-webkit-scrollbar { width: 6px; }
+  </style>
+</head>
+<body class="bg-white text-fleury-ink antialiased overflow-x-hidden">
+
+  <!-- ===== NAV ===== -->
+  <header class="fixed top-0 inset-x-0 z-40 glass border-b border-black/5">
+    <div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2">
+        <!-- LOGO FLEURY -->
+        <svg width="120" height="32" viewBox="0 0 230 80" xmlns="http://www.w3.org/2000/svg" aria-label="Fleury">
+          <text x="0" y="60" font-family="Plus Jakarta Sans, sans-serif" font-size="64" font-weight="800" fill="#e30613" letter-spacing="-2">Fleury</text>
+        </svg>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-fleury-ink/70">
+        <a href="#sobre" class="hover:text-fleury transition">A Sofia</a>
+        <a href="#numeros" class="hover:text-fleury transition">Impacto</a>
+        <a href="#projeto" class="hover:text-fleury transition">O Projeto</a>
+        <a href="#orcamento" class="hover:text-fleury transition">Orçamento</a>
+      </nav>
+      <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-fleury/30 transition">
+        💬 Falar com a Sofia
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section id="top" class="relative min-h-screen flex items-center pt-24 overflow-hidden">
+    <!-- animated blobs -->
+    <div class="absolute -top-20 -left-20 w-[480px] h-[480px] bg-fleury/20 rounded-full blur-3xl animate-blob"></div>
+    <div class="absolute top-40 right-0 w-[420px] h-[420px] bg-rose-400/20 rounded-full blur-3xl animate-blob" style="animation-delay:-5s"></div>
+    <div class="absolute bottom-0 left-1/3 w-[360px] h-[360px] bg-pink-300/20 rounded-full blur-3xl animate-blob" style="animation-delay:-9s"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="inline-flex items-center gap-2 bg-fleury-light text-fleury text-xs font-bold px-4 py-2 rounded-full mb-6 reveal">
+          <span class="w-2 h-2 bg-fleury rounded-full animate-pulse"></span> INTELIGÊNCIA ARTIFICIAL · GRUPO FLEURY
+        </span>
+        <h1 class="text-5xl md:text-6xl font-extrabold leading-[1.05] mb-6 reveal" style="animation-delay:.1s">
+          Atendimento que <span class="shimmer">cuida</span> de gente,<br>na velocidade da IA.
+        </h1>
+        <p class="text-lg text-fleury-ink/70 max-w-xl mb-8 reveal" style="animation-delay:.2s">
+          Conheça a <strong>Sofia</strong>, a assistente virtual humanizada do Fleury. Ela agenda exames,
+          explica preparos, encontra resultados e cuida de cada paciente com empatia — <strong>24 horas por dia</strong>.
+        </p>
+        <div class="flex flex-wrap gap-4 reveal" style="animation-delay:.3s">
+          <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white font-bold px-8 py-4 rounded-full shadow-xl shadow-fleury/30 transition hover:-translate-y-0.5">
+            Experimentar agora →
+          </button>
+          <a href="#projeto" class="border-2 border-fleury/20 hover:border-fleury text-fleury font-bold px-8 py-4 rounded-full transition">
+            Ver o projeto
+          </a>
+        </div>
+        <div class="flex items-center gap-6 mt-10 text-sm text-fleury-ink/60 reveal" style="animation-delay:.4s">
+          <div><b class="text-fleury text-xl">70%</b> contatos resolvidos</div>
+          <div class="w-px h-8 bg-black/10"></div>
+          <div><b class="text-fleury text-xl">24/7</b> disponível</div>
+          <div class="w-px h-8 bg-black/10"></div>
+          <div><b class="text-fleury text-xl">+CSAT</b> satisfação</div>
+        </div>
+      </div>
+
+      <!-- Chat mockup flutuante -->
+      <div class="relative reveal" style="animation-delay:.3s">
+        <div class="absolute inset-0 bg-gradient-to-tr from-fleury/30 to-rose-300/30 blur-2xl rounded-[40px]"></div>
+        <div class="relative bg-white rounded-[32px] shadow-2xl border border-black/5 p-5 animate-float">
+          <div class="flex items-center gap-3 pb-4 border-b border-black/5">
+            <div class="w-11 h-11 rounded-full bg-fleury-light grid place-items-center text-2xl">👩‍⚕️</div>
+            <div><div class="font-bold leading-none">Sofia</div><div class="text-xs text-green-500 font-semibold">● online agora</div></div>
+          </div>
+          <div class="space-y-3 py-4 text-sm">
+            <div class="bg-gray-100 rounded-2xl rounded-tl-md px-4 py-2.5 max-w-[85%]">Olá! 😊 Sou a Sofia. Como posso te ajudar?</div>
+            <div class="bg-fleury text-white rounded-2xl rounded-tr-md px-4 py-2.5 max-w-[80%] ml-auto">Preciso agendar um ultrassom</div>
+            <div class="bg-gray-100 rounded-2xl rounded-tl-md px-4 py-2.5 max-w-[88%]">Claro! 🗓️ Você tem o pedido médico em mãos? Posso já ver as unidades perto de você.</div>
+          </div>
+          <div class="flex gap-2 pt-2">
+            <div class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm text-gray-400">Digite sua mensagem...</div>
+            <div class="w-10 h-10 bg-fleury rounded-full grid place-items-center text-white">➤</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOBRE / FEATURES ===== -->
+  <section id="sobre" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+      <h2 class="text-4xl font-extrabold mb-4">Humanizada por design</h2>
+      <p class="text-fleury-ink/70 text-lg">A Sofia une a eficiência da IA ao cuidado que define o Fleury. Cada conversa é acolhedora, segura e resolutiva.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="reveal group p-8 rounded-3xl border border-black/5 hover:border-fleury/40 hover:shadow-xl transition bg-white">
+        <div class="w-14 h-14 rounded-2xl bg-fleury-light grid place-items-center text-3xl mb-5 group-hover:scale-110 transition">💬</div>
+        <h3 class="font-bold text-xl mb-2">Tom empático</h3>
+        <p class="text-fleury-ink/60">Linguagem acolhedora e natural, com transbordo imediato para humano em temas sensíveis.</p>
+      </div>
+      <div class="reveal group p-8 rounded-3xl border border-black/5 hover:border-fleury/40 hover:shadow-xl transition bg-white" style="animation-delay:.1s">
+        <div class="w-14 h-14 rounded-2xl bg-fleury-light grid place-items-center text-3xl mb-5 group-hover:scale-110 transition">⚡</div>
+        <h3 class="font-bold text-xl mb-2">Resolução instantânea</h3>
+        <p class="text-fleury-ink/60">Agendamentos, resultados, preparos e convênios resolvidos em segundos, sem fila.</p>
+      </div>
+      <div class="reveal group p-8 rounded-3xl border border-black/5 hover:border-fleury/40 hover:shadow-xl transition bg-white" style="animation-delay:.2s">
+        <div class="w-14 h-14 rounded-2xl bg-fleury-light grid place-items-center text-3xl mb-5 group-hover:scale-110 transition">🔐</div>
+        <h3 class="font-bold text-xl mb-2">Segura e LGPD</h3>
+        <p class="text-fleury-ink/60">Dados de saúde tratados com criptografia, consentimento e nunca emitindo diagnóstico.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NÚMEROS ===== -->
+  <section id="numeros" class="py-24 bg-gradient-to-br from-fleury to-fleury-dark text-white">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+      <div class="reveal"><div class="text-5xl font-extrabold counter" data-target="70">0</div><div class="text-white/70 mt-2">% contatos automatizados</div></div>
+      <div class="reveal" style="animation-delay:.1s"><div class="text-5xl font-extrabold counter" data-target="40">0</div><div class="text-white/70 mt-2">% menos chamados repetitivos</div></div>
+      <div class="reveal" style="animation-delay:.2s"><div class="text-5xl font-extrabold"><span class="counter" data-target="24">0</span>/7</div><div class="text-white/70 mt-2">horas de atendimento</div></div>
+      <div class="reveal" style="animation-delay:.3s"><div class="text-5xl font-extrabold"><span class="counter" data-target="4">0</span>m</div><div class="text-white/70 mt-2">para operação plena</div></div>
+    </div>
+  </section>
+
+  <!-- ===== PROJETO: CRONOGRAMA + SETORES ===== -->
+  <section id="projeto" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-fleury font-bold text-sm tracking-widest">O PROJETO</span>
+      <h2 class="text-4xl font-extrabold mt-2">Da ideia à operação em 16 semanas</h2>
+    </div>
+
+    <!-- Timeline -->
+    <div class="grid lg:grid-cols-3 gap-12">
+      <div class="lg:col-span-2">
+        <ol class="relative border-l-2 border-fleury/20 ml-3 space-y-8">
+          <li class="reveal pl-8 relative"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 1–2 · Descoberta</b><p class="text-fleury-ink/60 text-sm">Mapeamento de intenções e análise do histórico do SAC.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.05s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 3–4 · Design</b><p class="text-fleury-ink/60 text-sm">Persona, fluxos, tom de voz e roteiros humanizados.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.1s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 5–9 · Desenvolvimento</b><p class="text-fleury-ink/60 text-sm">Integração da IA (Claude), APIs internas e base de conhecimento.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.15s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 10–12 · Testes & Validação</b><p class="text-fleury-ink/60 text-sm">Validação clínica, conformidade LGPD e testes com usuários.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.2s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 13–14 · Piloto</b><p class="text-fleury-ink/60 text-sm">10% do tráfego em uma região, com monitoramento próximo.</p></li>
+          <li class="reveal pl-8 relative" style="animation-delay:.25s"><span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-fleury ring-4 ring-fleury-light"></span><b class="text-fleury">Sem. 15–16 · Rollout</b><p class="text-fleury-ink/60 text-sm">Expansão gradual para todos os canais.</p></li>
+        </ol>
+      </div>
+
+      <!-- Setores -->
+      <div class="reveal">
+        <h3 class="font-bold text-lg mb-4">Setores envolvidos</h3>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🎧</span><div><b class="block text-sm">Relacionamento / SAC</b><span class="text-xs text-fleury-ink/50">Dono do produto e tom de voz</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">💻</span><div><b class="block text-sm">TI & Dados</b><span class="text-xs text-fleury-ink/50">Integrações, IA e infraestrutura</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🔬</span><div><b class="block text-sm">Operações de Exames</b><span class="text-xs text-fleury-ink/50">Regras de agendamento e preparo</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">⚖️</span><div><b class="block text-sm">Jurídico / Compliance</b><span class="text-xs text-fleury-ink/50">LGPD e dados sensíveis</span></div></div>
+          <div class="flex items-center gap-3 bg-white border border-black/5 rounded-2xl p-4 hover:shadow-md transition"><span class="text-2xl">🩺</span><div><b class="block text-sm">Médico / Qualidade</b><span class="text-xs text-fleury-ink/50">Validação clínica das respostas</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Impacto -->
+    <div class="grid md:grid-cols-3 gap-6 mt-20">
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury"><b class="text-fleury">Curto prazo · 0–3m</b><p class="text-sm text-fleury-ink/70 mt-2">Atendimento 24/7, fim das filas e respostas instantâneas.</p></div>
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.1s"><b class="text-fleury">Médio prazo · 3–9m</b><p class="text-sm text-fleury-ink/70 mt-2">−40% de chamados repetitivos; equipe foca em casos complexos.</p></div>
+      <div class="reveal p-8 rounded-3xl bg-fleury-light border-t-4 border-fleury" style="animation-delay:.2s"><b class="text-fleury">Longo prazo · 9m+</b><p class="text-sm text-fleury-ink/70 mt-2">Menor custo por atendimento e escala sem aumentar a equipe.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== ORÇAMENTO ===== -->
+  <section id="orcamento" class="py-28 bg-fleury-ink text-white">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-12 reveal">
+        <span class="text-rose-300 font-bold text-sm tracking-widest">INVESTIMENTO</span>
+        <h2 class="text-4xl font-extrabold mt-2">Orçamento estimado · Ano 1</h2>
+        <p class="text-white/60 mt-3">Payback estimado em 12–18 meses pela redução de custo do SAC.</p>
+      </div>
+      <div class="reveal bg-white/5 rounded-3xl p-8 backdrop-blur border border-white/10">
+        <div class="space-y-4">
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Desenvolvimento e integrações</span><b>R$ 320.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Licenças de IA / API (Claude)</span><b>R$ 90.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Infraestrutura cloud & segurança</span><b>R$ 60.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Treinamento & gestão de mudança</span><b>R$ 50.000</b></div>
+          <div class="flex justify-between items-center pb-4 border-b border-white/10"><span>Contingência (15%)</span><b>R$ 78.000</b></div>
+          <div class="flex justify-between items-center text-xl pt-2"><span class="font-bold">Total</span><b class="text-rose-300 text-2xl">R$ 598.000</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA FINAL ===== -->
+  <section class="py-28 text-center max-w-3xl mx-auto px-6 reveal">
+    <h2 class="text-4xl font-extrabold mb-4">Pronto para conhecer a Sofia?</h2>
+    <p class="text-fleury-ink/70 text-lg mb-8">Clique no botão e converse agora mesmo com a assistente.</p>
+    <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white font-bold px-10 py-5 rounded-full shadow-xl shadow-fleury/30 text-lg transition hover:-translate-y-1">
+      💬 Conversar com a Sofia
+    </button>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-black/5 py-10 text-center text-sm text-fleury-ink/50">
+    <svg width="100" height="26" viewBox="0 0 320 80" class="mx-auto mb-3" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="60" font-family="Plus Jakarta Sans, sans-serif" font-size="64" font-weight="800" fill="#e30613" letter-spacing="-2">Fleury</text>
+    </svg>
+    Protótipo de atendimento humanizado via IA · Desafio Grupo Fleury · 2026
+  </footer>
+
+  <!-- ===== WIDGET DE CHAT ===== -->
+  <button id="chatFab" onclick="openChat()" class="fixed bottom-6 right-6 z-50 w-16 h-16 bg-fleury hover:bg-fleury-dark text-white rounded-full shadow-2xl shadow-fleury/40 grid place-items-center text-2xl transition hover:scale-110">
+    💬
+  </button>
+
+  <div id="chatWindow" class="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-3rem)] bg-white rounded-[28px] shadow-2xl border border-black/10 flex-col overflow-hidden hidden">
+    <!-- header -->
+    <div class="bg-gradient-to-r from-fleury to-fleury-dark text-white p-4 flex items-center gap-3">
+      <div class="w-11 h-11 rounded-full bg-white/20 grid place-items-center text-2xl">👩‍⚕️</div>
+      <div class="flex-1"><div class="font-bold leading-none">Sofia</div><div class="text-xs text-white/80">Assistente virtual · online</div></div>
+      <button onclick="transferHuman()" title="Atendente humano" class="text-white/80 hover:text-white text-sm">👤</button>
+      <button onclick="closeChat()" class="text-white/80 hover:text-white text-xl leading-none">✕</button>
+    </div>
+    <!-- messages -->
+    <div id="messages" class="chat-scroll flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"></div>
+    <!-- quick replies -->
+    <div id="quickReplies" class="px-4 pb-1 flex flex-wrap gap-2 bg-gray-50"></div>
+    <!-- composer -->
+    <form id="composer" class="p-3 flex gap-2 border-t border-black/5">
+      <input id="input" autocomplete="off" placeholder="Digite sua mensagem..." class="flex-1 bg-gray-100 rounded-full px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-fleury/40" />
+      <button type="submit" class="w-11 h-11 bg-fleury hover:bg-fleury-dark text-white rounded-full grid place-items-center transition">➤</button>
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
