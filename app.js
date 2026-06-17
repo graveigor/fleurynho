@@ -513,3 +513,65 @@ window.wValidate = wValidate;
 window.wAccept = wAccept;
 window.wChooseChat = wChooseChat;
 window.wChooseHuman = wChooseHuman;
+
+/* ===================== VÍDEO EXPLICATIVO (SIMULAÇÃO) ===================== */
+let vidTimers = [];
+const clearVid = () => { vidTimers.forEach(clearTimeout); vidTimers = []; };
+
+function vidBubble(text, who) {
+  const chat = $('#vidChat');
+  const w = document.createElement('div');
+  w.className = 'flex ' + (who === 'user' ? 'justify-end' : 'justify-start');
+  const b = document.createElement('div');
+  b.className = who === 'user'
+    ? 'bg-fleury text-white rounded-2xl rounded-tr-md px-3 py-2 text-xs max-w-[80%]'
+    : 'bg-white text-fleury-ink rounded-2xl rounded-tl-md px-3 py-2 text-xs max-w-[85%]';
+  b.textContent = text;
+  w.appendChild(b);
+  chat.appendChild(w);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function playVideo() {
+  const modal = $('#videoModal');
+  modal.classList.remove('hidden');
+  clearVid();
+  const chat = $('#vidChat'), cap = $('#vidCaption'), bar = $('#vidBar');
+  chat.innerHTML = ''; cap.textContent = '';
+  bar.style.transition = 'none'; bar.style.width = '0%';
+
+  // roteiro da "gravação": [tipo, texto]  (cap = legenda; user/bot = balão)
+  const seq = [
+    ['cap', '👋 Veja como é simples usar o Fleurynho'],
+    ['user', 'Quero agendar um exame'],
+    ['bot', 'Claro! 🗓️ Qual exame você precisa?'],
+    ['user', 'Exame de sangue'],
+    ['bot', 'Você está com o pedido médico em mãos?'],
+    ['user', 'Sim, tenho'],
+    ['bot', 'Perfeito! Em qual unidade?'],
+    ['user', 'Av. Paulista - SP'],
+    ['cap', '✅ Pronto! Tudo em segundos.'],
+    ['bot', 'Agendado! 🎉 Protocolo #FL204815.\nEnviei a confirmação por SMS e e-mail.'],
+    ['cap', '💙 E a qualquer momento você fala com um atendente humano.'],
+  ];
+
+  let t = 500;
+  seq.forEach((s) => {
+    vidTimers.push(setTimeout(() => {
+      if (s[0] === 'cap') cap.textContent = s[1];
+      else vidBubble(s[1], s[0]);
+    }, t));
+    t += s[0] === 'cap' ? 1900 : (s[0] === 'bot' ? 1700 : 1100);
+  });
+
+  const total = t + 400;
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width ' + total + 'ms linear';
+    bar.style.width = '100%';
+  });
+}
+function closeVideo() { $('#videoModal').classList.add('hidden'); clearVid(); }
+function videoToChat() { closeVideo(); openChat(); }
+window.playVideo = playVideo;
+window.closeVideo = closeVideo;
+window.videoToChat = videoToChat;

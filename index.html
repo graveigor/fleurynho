@@ -125,6 +125,25 @@
     </div>
   </div>
 
+  <!-- ===== MODAL DE VÍDEO EXPLICATIVO (SIMULAÇÃO) ===== -->
+  <div id="videoModal" class="hidden fixed inset-0 z-[70] bg-black/80 backdrop-blur flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Vídeo explicativo de como funciona">
+    <div class="w-full max-w-md bg-fleury-ink rounded-3xl overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-4 py-3 text-white/90 text-sm border-b border-white/10">
+        <span class="font-semibold">🎬 Como funciona — vídeo explicativo</span>
+        <button onclick="closeVideo()" aria-label="Fechar vídeo" class="text-white/70 hover:text-white text-lg leading-none">✕</button>
+      </div>
+      <div class="bg-gradient-to-b from-fleury-ink to-black px-4 pt-4 pb-2">
+        <div id="vidCaption" class="text-center text-white font-semibold min-h-[2.5rem] flex items-center justify-center text-sm px-2"></div>
+        <div id="vidChat" class="bg-white/5 rounded-2xl p-3 h-72 overflow-y-auto space-y-2 chat-scroll"></div>
+      </div>
+      <div class="px-4 py-3 border-t border-white/10 flex items-center gap-3">
+        <div class="flex-1 h-1.5 bg-white/15 rounded-full overflow-hidden"><div id="vidBar" class="h-full bg-fleury" style="width:0%"></div></div>
+        <button onclick="playVideo()" class="text-white/80 hover:text-white text-sm font-semibold whitespace-nowrap">↻ Repetir</button>
+        <button onclick="videoToChat()" class="bg-fleury hover:bg-fleury-dark text-white text-sm font-bold px-4 py-2 rounded-full whitespace-nowrap">Experimentar →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== NAV ===== -->
   <header class="fixed top-0 inset-x-0 z-40 glass border-b border-black/5">
     <div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
@@ -174,6 +193,9 @@
         <div class="flex flex-wrap gap-4 reveal" style="animation-delay:.3s">
           <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white font-bold px-8 py-4 rounded-full shadow-xl shadow-fleury/30 transition hover:-translate-y-0.5">
             Experimentar agora →
+          </button>
+          <button onclick="playVideo()" class="border-2 border-fleury/20 hover:border-fleury text-fleury font-bold px-8 py-4 rounded-full transition inline-flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-fleury text-white grid place-items-center text-xs">▶</span> Ver vídeo explicativo
           </button>
           <a href="#projeto" class="border-2 border-fleury/20 hover:border-fleury text-fleury font-bold px-8 py-4 rounded-full transition">
             Ver o projeto
@@ -251,6 +273,9 @@
       <span class="text-fleury font-bold text-sm tracking-widest">GUIA PRÁTICO</span>
       <h2 class="text-4xl font-extrabold mt-2">Como usar o Fleurynho em 4 passos</h2>
       <p class="text-fleury-ink/60 mt-3 max-w-2xl mx-auto">Simples para todo mundo. E se ficar qualquer dúvida, você fala com uma pessoa de verdade a qualquer momento.</p>
+      <button onclick="playVideo()" class="mt-6 inline-flex items-center gap-2 bg-fleury hover:bg-fleury-dark text-white font-bold px-6 py-3 rounded-full shadow-lg shadow-fleury/30 transition">
+        <span class="w-6 h-6 rounded-full bg-white/25 grid place-items-center text-xs">▶</span> Assistir vídeo explicativo (simulação)
+      </button>
     </div>
     <div class="grid md:grid-cols-4 gap-6">
       <div class="reveal p-7 rounded-3xl border border-black/5 bg-white text-center">
@@ -456,6 +481,20 @@
       <button type="submit" class="w-11 h-11 bg-fleury hover:bg-fleury-dark text-white rounded-full grid place-items-center transition">➤</button>
     </form>
   </div>
+
+  <!-- ===== VLIBRAS · Tradutor de Libras (Governo Federal) ===== -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      try { new window.VLibras.Widget('https://vlibras.gov.br/app'); } catch (e) {}
+    });
+  </script>
 
   <script src="app.js"></script>
 </body>
