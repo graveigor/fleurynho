@@ -15,7 +15,7 @@ const protocolo = () => '#FL' + Math.floor(100000 + Math.random() * 900000);
 let started = false;
 let state = { flow: null, step: null };
 let ctx = {};
-const HOME = ['Agendar exame', 'Resultado de exames', 'Preparo de exame', 'Convênios', 'Unidades'];
+const HOME = ['Agendar exame', 'Resultado de exames', 'Preparo de exame', 'Convênios', 'Unidades', '❓ Preciso de ajuda', '🧑‍💼 Falar com atendente'];
 
 /* ===================== BASE DE PREPAROS ===================== */
 const preparos = {
@@ -178,6 +178,62 @@ const flows = {
     },
   },
 
+  /* ---------- AJUDA / SUPORTE ---------- */
+  ajuda: {
+    start: 'a',
+    steps: {
+      a: {
+        msg: 'Estou aqui para te ajudar, sem pressa. 💙\nComo você prefere seguir?',
+        quick: ['📘 Ver tutorial de uso', '🧑‍💼 Falar com atendente', '📞 Central de Atendimento'],
+        on: (t) => {
+          const n = norm(t);
+          if (n.includes('tutorial')) return 'flow:tutorial';
+          if (n.includes('central')) return 'flow:central';
+          return 'end'; // "falar com atendente" é tratado globalmente
+        },
+      },
+    },
+  },
+
+  /* ---------- TUTORIAL (guia prático passo a passo) ---------- */
+  tutorial: {
+    start: 'p1',
+    steps: {
+      p1: {
+        msg: 'Vou te mostrar como funciono — é bem simples! 😊 (passo 1 de 4)\n\n1️⃣ Me diga o que você precisa. Você pode *escrever* ou apenas *tocar nos botões* que aparecem.',
+        quick: ['Próximo ▶'],
+        on: () => 'p2',
+      },
+      p2: {
+        msg: '2️⃣ Eu te guio passo a passo, fazendo uma pergunta de cada vez e oferecendo opções prontas para você só tocar. (passo 2 de 4)',
+        quick: ['Próximo ▶'],
+        on: () => 'p3',
+      },
+      p3: {
+        msg: '3️⃣ Comigo você pode: agendar exames, ver resultados, conferir o preparo, checar convênios e encontrar unidades — tudo por aqui. (passo 3 de 4)',
+        quick: ['Próximo ▶'],
+        on: () => 'p4',
+      },
+      p4: {
+        msg: '4️⃣ E o mais importante: a *qualquer momento* você pode falar com um atendente humano. Você nunca fica sozinho(a). 💙 (passo 4 de 4)\n\nFicou claro como usar?',
+        quick: ['Sim, entendi! 😊', 'Ainda não entendi', '🧑‍💼 Falar com atendente'],
+        on: (t) => (norm(t).includes('nao') ? 'flow:central' : 'flow:menu'),
+      },
+    },
+  },
+
+  /* ---------- CENTRAL DE ATENDIMENTO (pessoas reais) ---------- */
+  central: {
+    start: 'c',
+    steps: {
+      c: {
+        msg: 'Sem problemas! Vou te conectar com a nossa *Central de Atendimento*, com pessoas reais prontas para te ajudar com calma. 💙\n\n📞 0800 704 0822 (ligação gratuita)\n💬 WhatsApp: (11) 3179-0822\n🕐 Seg a Sex, 6h às 22h · Sáb 7h às 16h\n\nSe preferir, posso transferir você para um atendente agora mesmo.',
+        quick: ['🧑‍💼 Falar com atendente agora', 'Voltar ao início'],
+        on: (t) => (norm(t).includes('inicio') || norm(t).includes('voltar') ? 'flow:menu' : 'end'),
+      },
+    },
+  },
+
   /* ---------- MENU (rota interna) ---------- */
   menu: {
     start: 'm',
@@ -194,6 +250,9 @@ const gatilhos = [
   { flow: 'preparo', p: ['preparo', 'jejum', 'preparar', 'como me preparo', 'antes do exame'] },
   { flow: 'convenio', p: ['convenio', 'plano', 'particular', 'cobertura', 'reembolso', 'carteirinha'] },
   { flow: 'unidades', p: ['unidade', 'endereco', 'perto', 'localizacao', 'onde fica', 'horario de funcionamento'] },
+  { flow: 'tutorial', p: ['tutorial', 'como funciona', 'como usar', 'como uso', 'me ensina', 'passo a passo'] },
+  { flow: 'central', p: ['central de atendimento', 'telefone', '0800', 'ligar'] },
+  { flow: 'ajuda', p: ['ajuda', 'preciso de ajuda', 'socorro', 'dificuldade', 'nao entendi', 'nao sei usar', 'estou perdido', 'estou perdida', 'me ajuda'] },
 ];
 const saudacoes = ['oi', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'opa', 'eai'];
 const agradece = ['obrigado', 'obrigada', 'valeu', 'agradeco', 'perfeito', 'otimo'];
@@ -352,7 +411,7 @@ function greet() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMsg('Olá! 😊 Eu sou o *Fleurynho*, assistente virtual do Fleury.\nPosso te ajudar com agendamentos, resultados, preparo de exames, convênios e unidades — 24h por dia. Por onde começamos?', 'bot');
+    addMsg('Olá! 😊 Eu sou o *Fleurynho*, assistente virtual do Fleury.\nPosso te ajudar com agendamentos, resultados, preparos, convênios e unidades — 24h por dia.\n\nÉ a primeira vez por aqui? Toque em *"Preciso de ajuda"* para um tutorial rápido, ou *"Falar com atendente"* a qualquer momento. 💙', 'bot');
     renderQuick(HOME);
   }, 800);
 }
@@ -360,7 +419,7 @@ function greet() {
 $('#composer').addEventListener('submit', (e) => { e.preventDefault(); enviar(inputEl.value); });
 window.openChat = openChat;
 window.closeChat = closeChat;
-window.transferHuman = () => { openChat(); state.flow = null; addMsg('Falar com atendente', 'user'); transferHuman(); };
+window.transferHuman = () => { started = true; openChat(); state.flow = null; addMsg('Falar com atendente', 'user'); transferHuman(); };
 
 /* ===================== ANIMAÇÕES DE SCROLL ===================== */
 const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
@@ -393,3 +452,37 @@ function animateCounter(el) {
   };
   requestAnimationFrame(step);
 }
+
+/* ===================== ACESSIBILIDADE ===================== */
+let fontScale = 100; // %
+function applyFont() { document.documentElement.style.fontSize = (16 * fontScale / 100) + 'px'; }
+function a11yFont(dir) {
+  fontScale = Math.max(85, Math.min(150, fontScale + dir * 10));
+  applyFont();
+  localStorage.setItem('fl_font', fontScale);
+}
+function a11yContrast() {
+  const on = document.body.classList.toggle('contrast');
+  localStorage.setItem('fl_contrast', on ? '1' : '0');
+}
+function a11yReset() {
+  fontScale = 100; applyFont();
+  document.body.classList.remove('contrast');
+  localStorage.removeItem('fl_font'); localStorage.removeItem('fl_contrast');
+}
+function a11yToggle() {
+  const p = $('#a11yPanel');
+  const hidden = p.hasAttribute('hidden');
+  if (hidden) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+  $('#a11yFab').setAttribute('aria-expanded', hidden ? 'true' : 'false');
+}
+// restaura preferências salvas
+(function restoreA11y() {
+  const f = parseInt(localStorage.getItem('fl_font') || '100', 10);
+  if (f && f !== 100) { fontScale = f; applyFont(); }
+  if (localStorage.getItem('fl_contrast') === '1') document.body.classList.add('contrast');
+})();
+window.a11yFont = a11yFont;
+window.a11yContrast = a11yContrast;
+window.a11yReset = a11yReset;
+window.a11yToggle = a11yToggle;

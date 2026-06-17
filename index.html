@@ -45,6 +45,16 @@
     .shimmer { background: linear-gradient(110deg,#e30613 30%,#ff7a6e 50%,#e30613 70%); background-size: 200% 100%; animation: shimmer 3s linear infinite; -webkit-background-clip: text; background-clip: text; color: transparent; }
     ::-webkit-scrollbar { width: 10px; } ::-webkit-scrollbar-thumb { background: #e3061355; border-radius: 8px; }
     .chat-scroll::-webkit-scrollbar { width: 6px; }
+
+    /* ===== Acessibilidade: alto contraste ===== */
+    body.contrast { background: #000 !important; }
+    body.contrast *:not(svg):not(path) { background-color: #000 !important; color: #ffeb3b !important; border-color: #ffeb3b !important; box-shadow: none !important; }
+    body.contrast .shimmer, body.contrast .text-gradient { -webkit-text-fill-color: #ffeb3b !important; color: #ffeb3b !important; }
+    body.contrast button, body.contrast a { text-decoration: underline; }
+    body.contrast svg text { fill: #ffeb3b !important; }
+    /* foco visível para navegação por teclado */
+    a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .reveal { opacity: 1 !important; } }
   </style>
 </head>
 <body class="bg-white text-fleury-ink antialiased overflow-x-hidden">
@@ -60,13 +70,19 @@
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-fleury-ink/70">
         <a href="#sobre" class="hover:text-fleury transition">O Fleurynho</a>
+        <a href="#como-usar" class="hover:text-fleury transition">Como usar</a>
         <a href="#projeto" class="hover:text-fleury transition">Projeto</a>
         <a href="#orcamento" class="hover:text-fleury transition">Orçamento</a>
         <a href="#riscos" class="hover:text-fleury transition">Riscos & KPIs</a>
       </nav>
-      <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-fleury/30 transition">
-        💬 Falar com o Fleurynho
-      </button>
+      <div class="flex items-center gap-2">
+        <button onclick="transferHuman()" class="hidden sm:inline-flex border border-fleury text-fleury hover:bg-fleury hover:text-white text-sm font-bold px-4 py-2.5 rounded-full transition" title="Falar agora com um atendente humano">
+          🧑‍💼 Atendente
+        </button>
+        <button onclick="openChat()" class="bg-fleury hover:bg-fleury-dark text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-fleury/30 transition">
+          💬 Falar com o Fleurynho
+        </button>
+      </div>
     </div>
   </header>
 
@@ -160,6 +176,49 @@
       <div class="reveal" style="animation-delay:.1s"><div class="text-5xl font-extrabold"><span class="counter" data-target="24">0</span>/7</div><div class="text-white/70 mt-2">horas de atendimento</div></div>
       <div class="reveal" style="animation-delay:.2s"><div class="text-5xl font-extrabold"><span class="counter" data-target="7">0</span></div><div class="text-white/70 mt-2">semanas para implantar</div></div>
       <div class="reveal" style="animation-delay:.3s"><div class="text-5xl font-extrabold"><span class="counter" data-target="3">0</span></div><div class="text-white/70 mt-2">canais: WhatsApp, e-mail e chat</div></div>
+    </div>
+  </section>
+
+  <!-- ===== COMO USAR (TUTORIAL) ===== -->
+  <section id="como-usar" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-fleury font-bold text-sm tracking-widest">GUIA PRÁTICO</span>
+      <h2 class="text-4xl font-extrabold mt-2">Como usar o Fleurynho em 4 passos</h2>
+      <p class="text-fleury-ink/60 mt-3 max-w-2xl mx-auto">Simples para todo mundo. E se ficar qualquer dúvida, você fala com uma pessoa de verdade a qualquer momento.</p>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="reveal p-7 rounded-3xl border border-black/5 bg-white text-center">
+        <div class="w-12 h-12 mx-auto rounded-full bg-fleury text-white grid place-items-center font-extrabold text-lg mb-4">1</div>
+        <h3 class="font-bold mb-2">Abra o chat</h3>
+        <p class="text-sm text-fleury-ink/60">Toque no botão 💬 no canto da tela para iniciar a conversa.</p>
+      </div>
+      <div class="reveal p-7 rounded-3xl border border-black/5 bg-white text-center" style="animation-delay:.1s">
+        <div class="w-12 h-12 mx-auto rounded-full bg-fleury text-white grid place-items-center font-extrabold text-lg mb-4">2</div>
+        <h3 class="font-bold mb-2">Diga o que precisa</h3>
+        <p class="text-sm text-fleury-ink/60">Escreva ou apenas toque nos botões prontos. Sem complicação.</p>
+      </div>
+      <div class="reveal p-7 rounded-3xl border border-black/5 bg-white text-center" style="animation-delay:.2s">
+        <div class="w-12 h-12 mx-auto rounded-full bg-fleury text-white grid place-items-center font-extrabold text-lg mb-4">3</div>
+        <h3 class="font-bold mb-2">Siga o passo a passo</h3>
+        <p class="text-sm text-fleury-ink/60">O Fleurynho te guia até resolver — agendar, resultado, preparo e mais.</p>
+      </div>
+      <div class="reveal p-7 rounded-3xl border border-black/5 bg-white text-center" style="animation-delay:.3s">
+        <div class="w-12 h-12 mx-auto rounded-full bg-fleury text-white grid place-items-center font-extrabold text-lg mb-4">4</div>
+        <h3 class="font-bold mb-2">Precisa de gente?</h3>
+        <p class="text-sm text-fleury-ink/60">É só pedir: você é transferido para um atendente humano na hora.</p>
+      </div>
+    </div>
+
+    <!-- Não entendeu? Central de Atendimento -->
+    <div class="reveal mt-10 bg-fleury-light rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 justify-between">
+      <div>
+        <h3 class="font-extrabold text-xl text-fleury">Não entendeu, mesmo com o tutorial?</h3>
+        <p class="text-fleury-ink/70 mt-1">Sem problema. Fale com a nossa Central de Atendimento, com pessoas reais:</p>
+        <p class="mt-2 text-fleury-ink/80 font-semibold">📞 0800 704 0822 &nbsp;·&nbsp; 💬 (11) 3179-0822 &nbsp;·&nbsp; 🕐 Seg–Sex 6h–22h, Sáb 7h–16h</p>
+      </div>
+      <button onclick="transferHuman()" class="shrink-0 bg-fleury hover:bg-fleury-dark text-white font-bold px-7 py-4 rounded-full shadow-lg shadow-fleury/30 transition">
+        🧑‍💼 Falar com atendente
+      </button>
     </div>
   </section>
 
@@ -285,6 +344,28 @@
     </svg>
     Protótipo de atendimento humanizado via IA · Desafio Grupo Fleury · 2026
   </footer>
+
+  <!-- ===== WIDGET DE ACESSIBILIDADE ===== -->
+  <div class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3">
+    <div id="a11yPanel" hidden class="bg-white rounded-2xl shadow-2xl border border-black/10 p-4 w-60">
+      <p class="font-bold text-sm mb-3 text-fleury-ink">♿ Acessibilidade</p>
+      <div class="space-y-2 text-sm">
+        <div class="flex items-center justify-between">
+          <span>Tamanho do texto</span>
+          <span class="flex gap-1">
+            <button onclick="a11yFont(-1)" aria-label="Diminuir texto" class="w-8 h-8 rounded-lg border border-black/10 hover:bg-fleury-light font-bold">A-</button>
+            <button onclick="a11yFont(1)" aria-label="Aumentar texto" class="w-8 h-8 rounded-lg border border-black/10 hover:bg-fleury-light font-bold">A+</button>
+          </span>
+        </div>
+        <button onclick="a11yContrast()" class="w-full text-left px-3 py-2 rounded-lg border border-black/10 hover:bg-fleury-light">🌗 Alto contraste</button>
+        <button onclick="a11yReset()" class="w-full text-left px-3 py-2 rounded-lg border border-black/10 hover:bg-fleury-light">↺ Restaurar padrão</button>
+      </div>
+    </div>
+    <button id="a11yFab" onclick="a11yToggle()" aria-label="Abrir opções de acessibilidade" aria-expanded="false"
+            class="w-14 h-14 bg-fleury-ink text-white rounded-full shadow-2xl grid place-items-center text-2xl transition hover:scale-110">
+      ♿
+    </button>
+  </div>
 
   <!-- ===== WIDGET DE CHAT ===== -->
   <button id="chatFab" onclick="openChat()" class="fixed bottom-6 right-6 z-50 w-16 h-16 bg-fleury hover:bg-fleury-dark text-white rounded-full shadow-2xl shadow-fleury/40 grid place-items-center text-2xl transition hover:scale-110">
