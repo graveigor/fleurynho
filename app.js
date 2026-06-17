@@ -159,19 +159,33 @@ window.closeChat = closeChat;
 window.transferHuman = transferHuman;
 
 /* ---------- Animações de scroll (reveal + contadores) ---------- */
-const io = new IntersectionObserver((entries) => {
-  entries.forEach((e) => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add('in');
-    if (e.target.querySelectorAll) {
-      e.target.querySelectorAll('.counter').forEach(animateCounter);
-    }
-    if (e.target.classList.contains('counter')) animateCounter(e.target);
-    io.unobserve(e.target);
-  });
-}, { threshold: 0.15 });
+const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
 
-document.querySelectorAll('.reveal, .counter').forEach((el) => io.observe(el));
+// JS ativo: remove o failsafe "no-js" para permitir as animações
+document.documentElement.classList.remove('no-js');
+
+try {
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        if (e.target.querySelectorAll) e.target.querySelectorAll('.counter').forEach(animateCounter);
+        if (e.target.classList.contains('counter')) animateCounter(e.target);
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal, .counter').forEach((el) => io.observe(el));
+  } else {
+    revealAll();
+    document.querySelectorAll('.counter').forEach(animateCounter);
+  }
+} catch (err) {
+  revealAll();
+}
+
+// rede de segurança: garante que nada fique invisível após o carregamento
+window.addEventListener('load', () => setTimeout(revealAll, 1200));
 
 function animateCounter(el) {
   if (el.dataset.done) return;

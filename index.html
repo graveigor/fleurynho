@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth no-js">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,8 +34,12 @@
   </script>
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    /* animacao definida localmente (nao depende do CDN do Tailwind) */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
     .reveal { opacity: 0; }
     .reveal.in { animation: fadeUp 0.7s ease forwards; }
+    /* failsafe: se o JS nao rodar, mostra tudo (sem animacao) */
+    .no-js .reveal { opacity: 1 !important; }
     .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); }
     .text-gradient { background: linear-gradient(90deg,#e30613,#ff5a4d); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .shimmer { background: linear-gradient(110deg,#e30613 30%,#ff7a6e 50%,#e30613 70%); background-size: 200% 100%; animation: shimmer 3s linear infinite; -webkit-background-clip: text; background-clip: text; color: transparent; }
