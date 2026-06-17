@@ -59,6 +59,72 @@
 </head>
 <body class="bg-white text-fleury-ink antialiased overflow-x-hidden">
 
+  <!-- ===== MODAL DE BOAS-VINDAS: TERMOS/LGPD + ESCOLHA + TUTORIAL ===== -->
+  <div id="welcome" class="hidden fixed inset-0 z-[60] bg-fleury-ink/80 backdrop-blur flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="wTitle">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[92vh] overflow-y-auto">
+
+      <!-- Passo 1: Termos / LGPD -->
+      <div id="wStep1" class="p-8">
+        <svg width="120" height="32" viewBox="0 0 230 80" class="mb-5" xmlns="http://www.w3.org/2000/svg" aria-label="Fleury">
+          <text x="0" y="60" font-family="Plus Jakarta Sans, sans-serif" font-size="64" font-weight="800" fill="#e30613" letter-spacing="-2">Fleury</text>
+        </svg>
+        <h2 id="wTitle" class="text-2xl font-extrabold mb-2">Bem-vindo(a) ao atendimento Fleury 💙</h2>
+        <p class="text-fleury-ink/70 text-sm mb-4">Antes de começar, precisamos do seu consentimento para um atendimento seguro.</p>
+
+        <div class="bg-gray-50 border border-black/5 rounded-2xl p-4 text-sm text-fleury-ink/70 max-h-40 overflow-y-auto leading-relaxed mb-4">
+          <p class="mb-2"><b>Privacidade e proteção de dados (LGPD)</b></p>
+          <p class="mb-2">Para utilizar este atendimento, o Grupo Fleury trata seus dados pessoais e dados de saúde conforme a <b>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</b>, exclusivamente para fins de atendimento, agendamento de exames e acesso a resultados.</p>
+          <p class="mb-2">Seus dados são protegidos com criptografia e <b>não são compartilhados</b> com terceiros sem a sua autorização. Você pode revogar este consentimento e solicitar a exclusão dos seus dados a qualquer momento.</p>
+          <p>O Fleurynho é um assistente de IA e <b>não substitui avaliação médica</b>. Em situações sensíveis, você sempre poderá falar com um atendente humano.</p>
+        </div>
+
+        <label class="flex items-start gap-3 mb-3 cursor-pointer text-sm">
+          <input type="checkbox" id="wChk1" class="mt-1 w-5 h-5 accent-fleury shrink-0" onchange="wValidate()" />
+          <span>Li e aceito os <b>Termos de Uso</b> e a <b>Política de Privacidade</b>.</span>
+        </label>
+        <label class="flex items-start gap-3 mb-5 cursor-pointer text-sm">
+          <input type="checkbox" id="wChk2" class="mt-1 w-5 h-5 accent-fleury shrink-0" onchange="wValidate()" />
+          <span><b>Autorizo</b> o tratamento dos meus dados pessoais e de saúde para o atendimento, conforme a LGPD.</span>
+        </label>
+
+        <button id="wContinue" onclick="wAccept()" disabled
+                class="w-full bg-fleury text-white font-bold py-3.5 rounded-full transition disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-fleury-dark">
+          Aceitar e continuar →
+        </button>
+        <p class="text-center text-xs text-fleury-ink/40 mt-3">É necessário aceitar os dois itens para continuar.</p>
+      </div>
+
+      <!-- Passo 2: Escolha do canal + mini tutorial -->
+      <div id="wStep2" hidden class="p-8">
+        <h2 class="text-2xl font-extrabold mb-1">Como você prefere ser atendido(a)?</h2>
+        <p class="text-fleury-ink/70 text-sm mb-5">Escolha uma das opções abaixo. Você pode trocar a qualquer momento.</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <button onclick="wChooseChat()" class="group text-left p-5 rounded-2xl border-2 border-fleury/20 hover:border-fleury hover:shadow-lg transition">
+            <div class="text-3xl mb-2">🤖</div>
+            <div class="font-bold">Atendimento por chatbot</div>
+            <div class="text-xs text-fleury-ink/60 mt-1">Respostas na hora, 24h, com o Fleurynho.</div>
+          </button>
+          <button onclick="wChooseHuman()" class="group text-left p-5 rounded-2xl border-2 border-fleury/20 hover:border-fleury hover:shadow-lg transition">
+            <div class="text-3xl mb-2">🧑‍💼</div>
+            <div class="font-bold">Falar com atendente</div>
+            <div class="text-xs text-fleury-ink/60 mt-1">Atendimento com uma pessoa da nossa equipe.</div>
+          </button>
+        </div>
+
+        <div class="bg-fleury-light rounded-2xl p-5">
+          <p class="font-bold text-fleury text-sm mb-3">📘 Mini tutorial — como funciona</p>
+          <ol class="space-y-2 text-sm text-fleury-ink/75">
+            <li><b>1.</b> Escolha o canal: chatbot ou atendente.</li>
+            <li><b>2.</b> Diga o que precisa — escrevendo ou tocando nos botões prontos.</li>
+            <li><b>3.</b> O Fleurynho guia você passo a passo até resolver.</li>
+            <li><b>4.</b> Precisou de gente? É só pedir — transferimos na hora. 💙</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== NAV ===== -->
   <header class="fixed top-0 inset-x-0 z-40 glass border-b border-black/5">
     <div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">

@@ -486,3 +486,30 @@ window.a11yFont = a11yFont;
 window.a11yContrast = a11yContrast;
 window.a11yReset = a11yReset;
 window.a11yToggle = a11yToggle;
+
+/* ===================== BOAS-VINDAS / TERMOS (LGPD) ===================== */
+function wValidate() {
+  const ok = $('#wChk1')?.checked && $('#wChk2')?.checked;
+  const btn = $('#wContinue');
+  if (btn) btn.disabled = !ok;
+}
+function wAccept() {
+  if (!($('#wChk1')?.checked && $('#wChk2')?.checked)) return;
+  localStorage.setItem('fl_consent', '1');
+  $('#wStep1').setAttribute('hidden', '');
+  $('#wStep2').removeAttribute('hidden');
+}
+function wClose() { $('#welcome')?.classList.add('hidden'); }
+function wChooseChat() { wClose(); openChat(); }
+function wChooseHuman() { wClose(); window.transferHuman(); }
+// exibe o modal no início, se ainda não houve consentimento nesta sessão/navegador
+(function initWelcome() {
+  const el = $('#welcome');
+  if (!el) return;
+  if (localStorage.getItem('fl_consent') === '1') return; // já aceitou antes
+  el.classList.remove('hidden');
+})();
+window.wValidate = wValidate;
+window.wAccept = wAccept;
+window.wChooseChat = wChooseChat;
+window.wChooseHuman = wChooseHuman;
