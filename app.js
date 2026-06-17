@@ -1,72 +1,269 @@
 /* ============================================================
    Sofia — Assistente Virtual Humanizada do Grupo Fleury
-   Motor de intenções (100% offline para o demo) + UI do widget.
-   Em produção: trocar `responder()` por chamada à API Claude (RAG).
+   Motor de DIÁLOGO por fluxos (100% offline / demo completo).
+   Em produção: trocar a camada de fluxos por orquestração com a
+   API Claude + integrações (agendamento, laudos, convênios).
    ============================================================ */
 
 const $ = (s) => document.querySelector(s);
 const messagesEl = $('#messages');
 const quickEl = $('#quickReplies');
 const inputEl = $('#input');
+const norm = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+const protocolo = () => '#FL' + Math.floor(100000 + Math.random() * 900000);
+
 let started = false;
+let state = { flow: null, step: null };
+let ctx = {};
+const HOME = ['Agendar exame', 'Resultado de exames', 'Preparo de exame', 'Convênios', 'Unidades'];
 
-/* ---------- Intenções / base de conhecimento ---------- */
-const intents = [
-  { nome: 'saudacao', palavras: ['oi', 'ola', 'olá', 'bom dia', 'boa tarde', 'boa noite', 'opa', 'eai'],
-    resposta: () => 'Olá! 😊 Que bom falar com você! Como posso te ajudar hoje?',
-    quick: ['Agendar exame', 'Resultado de exames', 'Preparo de exame', 'Convênios'] },
+/* ===================== BASE DE PREPAROS ===================== */
+const preparos = {
+  sangue: 'Exame de sangue 🩸\n• Jejum de 8h a 12h (água pode, à vontade).\n• Evite álcool 72h antes e atividade física intensa no dia.\n• Continue seus medicamentos de uso contínuo, salvo orientação médica.',
+  glicemia: 'Glicemia em jejum 🧪\n• Jejum obrigatório de 8h (no máximo 12h).\n• Pode beber água.\n• Não fume antes da coleta.\n• Leve a lista dos seus medicamentos.',
+  abdome: 'Ultrassom de abdome total 🔍\n• Jejum de 6h a 8h.\n• Na véspera, evite alimentos gordurosos, refrigerantes e feijão.\n• Compareça com a bexiga cheia (beba 4 copos de água 1h antes e não urine).',
+  urina: 'Urina tipo I (EAS) 💧\n• Higienize bem a região íntima.\n• Colete a 1ª urina da manhã, desprezando o primeiro jato.\n• Use o frasco estéril fornecido pela unidade.',
+  colono: 'Colonoscopia 🩺\n• Preparo intestinal específico (laxante) conforme prescrição.\n• Dieta leve/líquida 24h a 48h antes.\n• Jejum no dia do exame.\n• É necessário acompanhante, pois há sedação.',
+};
 
-  { nome: 'agendamento', palavras: ['agendar', 'agendamento', 'marcar', 'marcacao', 'horario', 'consulta', 'exame', 'ultrassom', 'sangue'],
-    resposta: () => 'Claro, vou te ajudar a agendar! 🗓️\nMe conta:\n• Qual exame você precisa?\n• Tem o pedido médico em mãos?\n• Prefere alguma unidade ou data?\n\nPosso já listar as unidades mais próximas de você.',
-    quick: ['Exame de sangue', 'Ultrassom', 'Ver unidades', 'Falar com atendente'] },
+/* ===================== FLUXOS DE DIÁLOGO ===================== */
+const flows = {
+  /* ---------- AGENDAMENTO ---------- */
+  agendar: {
+    start: 'exame',
+    steps: {
+      exame: {
+        msg: 'Perfeito, vou te ajudar a agendar seu exame! 🗓️\nQual exame você precisa fazer?',
+        quick: ['Exame de sangue', 'Ultrassom', 'Raio-X', 'Ressonância', 'Outro exame'],
+        on: (t) => { ctx.exame = t; return 'pedido'; },
+      },
+      pedido: {
+        msg: () => `Ótimo, *${ctx.exame}*! 📋\nVocê já está com o pedido médico em mãos?`,
+        quick: ['Sim, tenho o pedido', 'Não tenho ainda'],
+        on: (t) => (norm(t).includes('nao') ? 'sempedido' : 'unidade'),
+      },
+      sempedido: {
+        msg: 'Sem o pedido médico não conseguimos realizar a maioria dos exames. 😊\nVocê pode pedir ao seu médico ou agendar uma teleconsulta conosco. Como prefere seguir?',
+        quick: ['Já vou providenciar (seguir)', 'Falar com atendente'],
+        on: () => 'unidade',
+      },
+      unidade: {
+        msg: 'Show! Em qual unidade você prefere ser atendido(a)? 📍',
+        quick: ['Av. Paulista - SP', 'Ibirapuera - SP', 'Barra - RJ', 'Outra unidade'],
+        on: (t) => { ctx.unidade = t; return 'data'; },
+      },
+      data: {
+        msg: () => `A unidade *${ctx.unidade}* tem estes horários disponíveis: 📅`,
+        quick: ['Amanhã, 08:00', 'Amanhã, 10:30', 'Quarta, 14:00', 'Outra data'],
+        on: (t) => { ctx.horario = t; return 'pagamento'; },
+      },
+      pagamento: {
+        msg: 'Como será o pagamento do exame? 💳',
+        quick: ['Pelo convênio', 'Particular'],
+        on: (t) => { ctx.pagamento = t; return 'confirma'; },
+      },
+      confirma: {
+        msg: () => `Vamos confirmar seu agendamento: ✅\n\n🔬 Exame: ${ctx.exame}\n📍 Unidade: ${ctx.unidade}\n🕐 Quando: ${ctx.horario}\n💳 Pagamento: ${ctx.pagamento}\n\nPosso confirmar?`,
+        quick: ['Confirmar agendamento', 'Cancelar'],
+        on: (t) => (norm(t).includes('confirmar') ? 'fim' : 'fimcancel'),
+      },
+      fim: {
+        msg: () => `Agendamento confirmado! 🎉\nSeu protocolo é *${protocolo()}*.\nVocê receberá a confirmação e as orientações de preparo por SMS e e-mail. 📲\n\nPosso ajudar em mais alguma coisa?`,
+        quick: ['Ver preparo do exame', 'Encerrar'],
+        on: (t) => (norm(t).includes('preparo') ? 'flow:preparo' : 'end'),
+      },
+      fimcancel: {
+        msg: 'Sem problemas, agendamento cancelado. 😊 Se mudar de ideia, é só me chamar! Posso ajudar em algo mais?',
+        quick: HOME,
+        on: () => 'end',
+      },
+    },
+  },
 
-  { nome: 'resultado', palavras: ['resultado', 'resultados', 'laudo', 'pronto', 'ficou pronto'],
-    resposta: () => 'Posso te ajudar com seus resultados! 📄\nVocê acessa todos os laudos com segurança no portal ou app Fleury, usando CPF e senha.\n\n🔗 meu.fleury.com.br\n\nQuer o link de acesso ou ajuda para recuperar a senha?',
-    quick: ['Recuperar senha', 'Receber link', 'Falar com atendente'] },
+  /* ---------- RESULTADOS ---------- */
+  resultado: {
+    start: 'cpf',
+    steps: {
+      cpf: {
+        msg: 'Claro! Para acessar seus resultados com segurança, me informe o seu CPF (apenas números). 🔒',
+        quick: [],
+        on: (t) => { ctx.cpf = t; return 'qual'; },
+      },
+      qual: {
+        msg: 'Obrigada! Localizei seus exames recentes. 📄\nQual deles você quer consultar?',
+        quick: ['Hemograma · 12/06', 'Colesterol · 12/06', 'Ultrassom · 05/06'],
+        on: (t) => { ctx.exame = t; return 'status'; },
+      },
+      status: {
+        msg: () => `O resultado de *${ctx.exame}* já está PRONTO! ✅\nComo você prefere recebê-lo?`,
+        quick: ['Ver no app/portal', 'Receber por e-mail', 'Falar com atendente'],
+        on: (t) => { ctx.via = t; return 'entrega'; },
+      },
+      entrega: {
+        msg: () => norm(ctx.via).includes('mail')
+          ? 'Pronto! Enviei o laudo em PDF para o e-mail cadastrado. 📧\nO arquivo é protegido por senha (seus 4 primeiros dígitos do CPF). Precisa de algo mais?'
+          : 'Você pode ver o laudo completo agora mesmo no portal seguro: 🔗 meu.fleury.com.br (login com CPF e senha). Precisa de algo mais?',
+        quick: ['Sim, outra coisa', 'Encerrar'],
+        on: (t) => (norm(t).includes('sim') ? 'flow:menu' : 'end'),
+      },
+    },
+  },
 
-  { nome: 'preparo', palavras: ['preparo', 'jejum', 'preparar', 'antes do exame', 'comer', 'beber', 'glicemia'],
-    resposta: () => 'Ótima pergunta — o preparo certo garante um resultado confiável. 🧪\nMe diz qual exame você vai fazer que eu passo as orientações (jejum, hidratação, medicamentos).\n\nExemplo: exames de sangue costumam pedir de 8h a 12h de jejum, mas varia conforme o exame.',
-    quick: ['Exame de sangue', 'Ultrassom abdome', 'Glicemia', 'Falar com atendente'] },
+  /* ---------- PREPARO ---------- */
+  preparo: {
+    start: 'exame',
+    steps: {
+      exame: {
+        msg: 'Claro! O preparo correto garante um resultado confiável. 🧪\nPara qual exame você quer as orientações?',
+        quick: ['Exame de sangue', 'Glicemia em jejum', 'Ultrassom de abdome', 'Urina (EAS)', 'Colonoscopia'],
+        on: (t) => {
+          const n = norm(t);
+          ctx.prep = n.includes('glicemia') ? 'glicemia'
+            : n.includes('abdome') ? 'abdome'
+            : n.includes('urina') ? 'urina'
+            : n.includes('colono') ? 'colono'
+            : 'sangue';
+          return 'instrucoes';
+        },
+      },
+      instrucoes: {
+        msg: () => `${preparos[ctx.prep]}\n\nQuer ver o preparo de outro exame ou agendar?`,
+        quick: ['Outro exame', 'Agendar exame', 'Encerrar'],
+        on: (t) => {
+          const n = norm(t);
+          if (n.includes('outro')) return 'exame';
+          if (n.includes('agendar')) return 'flow:agendar';
+          return 'end';
+        },
+      },
+    },
+  },
 
-  { nome: 'convenio', palavras: ['convenio', 'convênio', 'plano', 'particular', 'cobertura', 'aceita', 'reembolso'],
-    resposta: () => 'Trabalhamos com os principais convênios do país! 💳\nMe informa o nome do seu plano que eu verifico a cobertura para o exame que você precisa. Também atendemos no particular, com opção de reembolso.',
-    quick: ['Atendimento particular', 'Ver unidades', 'Falar com atendente'] },
+  /* ---------- CONVÊNIOS ---------- */
+  convenio: {
+    start: 'plano',
+    steps: {
+      plano: {
+        msg: 'Trabalhamos com os principais convênios do país! 💳\nQual é o seu plano?',
+        quick: ['Bradesco Saúde', 'SulAmérica', 'Amil', 'Unimed', 'Sou particular'],
+        on: (t) => { ctx.plano = t; return norm(t).includes('particular') ? 'particular' : 'cobertura'; },
+      },
+      cobertura: {
+        msg: () => `Boa notícia! O convênio *${ctx.plano}* tem cobertura para a maioria dos nossos exames. ✅\nVocê só vai precisar do pedido médico e da carteirinha do plano. Quer agendar agora?`,
+        quick: ['Agendar exame', 'Falar com atendente', 'Encerrar'],
+        on: (t) => (norm(t).includes('agendar') ? 'flow:agendar' : 'end'),
+      },
+      particular: {
+        msg: 'Sem problemas! No atendimento particular você tem agilidade e ainda pode solicitar o reembolso ao seu convênio depois. 💙\nQuer ver valores ou agendar?',
+        quick: ['Agendar exame', 'Falar com atendente', 'Encerrar'],
+        on: (t) => (norm(t).includes('agendar') ? 'flow:agendar' : 'end'),
+      },
+    },
+  },
 
-  { nome: 'unidades', palavras: ['unidade', 'unidades', 'endereco', 'endereço', 'perto', 'localizacao', 'onde'],
-    resposta: () => 'Temos diversas unidades para te atender! 📍\nMe informa seu bairro, cidade ou CEP que eu listo as mais próximas, com horários de funcionamento.',
-    quick: ['São Paulo - SP', 'Rio de Janeiro - RJ', 'Falar com atendente'] },
+  /* ---------- UNIDADES ---------- */
+  unidades: {
+    start: 'local',
+    steps: {
+      local: {
+        msg: 'Vou te ajudar a encontrar a unidade mais próxima! 📍\nMe informe sua cidade, bairro ou CEP.',
+        quick: ['São Paulo', 'Rio de Janeiro', 'Campinas'],
+        on: (t) => { ctx.local = t; return 'lista'; },
+      },
+      lista: {
+        msg: () => `Encontrei estas unidades perto de *${ctx.local}*: 🏥\n\n• Unidade Centro — Seg a Sex 6h-18h, Sáb 7h-13h\n• Unidade Shopping — Seg a Sáb 7h-19h\n• Unidade Hospital — 24 horas (urgências)\n\nQuer agendar em uma delas?`,
+        quick: ['Agendar exame', 'Encerrar'],
+        on: (t) => (norm(t).includes('agendar') ? 'flow:agendar' : 'end'),
+      },
+    },
+  },
 
-  { nome: 'agradecimento', palavras: ['obrigado', 'obrigada', 'valeu', 'agradeco', 'perfeito', 'otimo'],
-    resposta: () => 'Fico muito feliz em ajudar! 💙 Se precisar de mais alguma coisa, é só chamar. Cuide-se bem! 🌿',
-    quick: ['Agendar exame', 'Resultado de exames'] },
+  /* ---------- MENU (rota interna) ---------- */
+  menu: {
+    start: 'm',
+    steps: {
+      m: { msg: 'Claro! Com o que mais posso te ajudar? 😊', quick: HOME, on: () => 'end' },
+    },
+  },
+};
 
-  { nome: 'despedida', palavras: ['tchau', 'ate logo', 'falou', 'adeus', 'encerrar'],
-    resposta: () => 'Foi um prazer falar com você! 😊 O Fleury agradece o contato. Até breve! 💙', quick: [] },
+/* ===================== INTENÇÕES (entrada) ===================== */
+const gatilhos = [
+  { flow: 'agendar', p: ['agendar', 'agendamento', 'marcar', 'marcacao', 'horario', 'agenda'] },
+  { flow: 'resultado', p: ['resultado', 'laudo', 'exame pronto', 'ficou pronto', 'meus exames'] },
+  { flow: 'preparo', p: ['preparo', 'jejum', 'preparar', 'como me preparo', 'antes do exame'] },
+  { flow: 'convenio', p: ['convenio', 'plano', 'particular', 'cobertura', 'reembolso', 'carteirinha'] },
+  { flow: 'unidades', p: ['unidade', 'endereco', 'perto', 'localizacao', 'onde fica', 'horario de funcionamento'] },
 ];
+const saudacoes = ['oi', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'opa', 'eai'];
+const agradece = ['obrigado', 'obrigada', 'valeu', 'agradeco', 'perfeito', 'otimo'];
+const despede = ['tchau', 'ate logo', 'falou', 'adeus', 'encerrar'];
+const sensiveis = ['reclamacao', 'processar', 'grave', 'cancer', 'urgente', 'emergencia', 'morte', 'errado', 'pessimo', 'horrivel'];
 
-const sensiveis = ['reclamacao', 'reclamação', 'processar', 'grave', 'cancer', 'câncer', 'urgente', 'emergencia', 'emergência', 'morte', 'errado', 'pessimo', 'péssimo'];
-const fallback = () => 'Entendi! 🤔 Quero te ajudar da melhor forma — pode me dar um pouco mais de detalhe?\nPosso ajudar com agendamentos, resultados, preparo de exames, convênios e unidades.';
-
-/* ---------- Motor ---------- */
-const norm = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-
-function responder(texto) {
+/* ===================== ROTEADOR ===================== */
+function process(texto) {
   const t = norm(texto);
-  if (sensiveis.some((p) => t.includes(norm(p)))) {
-    return { texto: 'Sinto muito por isso, e quero que você seja muito bem cuidado. 💙\nEsse assunto merece atenção especial de um(a) atendente humano(a). Vou te transferir agora mesmo.', quick: ['Confirmar transferência'] };
+
+  // 1) temas sensíveis -> transbordo humanizado
+  if (sensiveis.some((p) => t.includes(p))) {
+    state.flow = null;
+    botSay('Sinto muito por isso, e quero que você seja muito bem cuidado(a). 💙\nEsse assunto merece a atenção de um(a) atendente humano(a). Vou te transferir agora mesmo, tudo bem?', ['Confirmar transferência', 'Continuar com a Sofia']);
+    state.flow = 'transbordo';
+    return;
   }
-  let melhor = null, score = 0;
-  for (const it of intents) {
-    const s = it.palavras.reduce((a, p) => a + (t.includes(norm(p)) ? 1 : 0), 0);
-    if (s > score) { score = s; melhor = it; }
+  if (state.flow === 'transbordo') {
+    state.flow = null;
+    if (t.includes('confirmar')) return filaHumano();
+    return botSay('Tudo bem, sigo com você! 😊 Como posso ajudar?', HOME);
   }
-  if (melhor && score > 0) return { texto: melhor.resposta(), quick: melhor.quick };
-  return { texto: fallback(), quick: ['Agendar exame', 'Resultado de exames', 'Convênios', 'Falar com atendente'] };
+
+  // 2) pedir atendente a qualquer momento
+  if (t.includes('atendente') || t.includes('humano')) { state.flow = null; return transferHuman(); }
+
+  // 3) encerrar / despedir
+  if (despede.some((p) => t.includes(p)) || t === 'cancelar') {
+    state.flow = null;
+    return botSay('Foi um prazer falar com você! 😊 O Fleury agradece o contato. Cuide-se bem! 💙', []);
+  }
+
+  // 4) dentro de um fluxo? avança
+  if (state.flow && flows[state.flow]) return advance(texto);
+
+  // 5) inicia fluxo por intenção
+  const g = gatilhos.find((g) => g.p.some((p) => t.includes(p)));
+  if (g) return startFlow(g.flow);
+
+  // 6) intenções simples
+  if (saudacoes.some((p) => t.includes(p)))
+    return botSay('Olá! 😊 Que bom falar com você! Como posso te ajudar hoje?', HOME);
+  if (agradece.some((p) => t.includes(p)))
+    return botSay('Fico muito feliz em ajudar! 💙 Precisa de mais alguma coisa?', HOME);
+
+  // 7) fallback
+  return botSay('Entendi! 🤔 Quero te ajudar da melhor forma. Escolha uma opção ou me conte com mais detalhes:', HOME);
 }
 
-/* ---------- UI ---------- */
-const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+function startFlow(name) {
+  ctx = {};
+  runStep(name, flows[name].start);
+}
 
+function runStep(name, key) {
+  state = { flow: name, step: key };
+  const step = flows[name].steps[key];
+  const msg = typeof step.msg === 'function' ? step.msg() : step.msg;
+  botSay(msg, step.quick || []);
+}
+
+function advance(texto) {
+  const step = flows[state.flow].steps[state.step];
+  let next = step.on ? step.on(texto) : 'end';
+  if (!next || next === 'end') { state.flow = null; return; }
+  if (next.startsWith('flow:')) return startFlow(next.slice(5));
+  runStep(state.flow, next);
+}
+
+/* ===================== UI ===================== */
 function addMsg(texto, who) {
   const wrap = document.createElement('div');
   const isUser = who === 'user';
@@ -74,11 +271,17 @@ function addMsg(texto, who) {
   const bubble = document.createElement('div');
   bubble.className = isUser
     ? 'bg-fleury text-white rounded-2xl rounded-tr-md px-4 py-2.5 max-w-[82%] text-sm whitespace-pre-wrap shadow'
-    : 'bg-white border border-black/5 rounded-2xl rounded-tl-md px-4 py-2.5 max-w-[88%] text-sm whitespace-pre-wrap shadow-sm';
-  bubble.textContent = texto;
+    : 'bg-white border border-black/5 rounded-2xl rounded-tl-md px-4 py-2.5 max-w-[88%] text-sm whitespace-pre-wrap shadow-sm leading-relaxed';
+  // negrito simples com *texto*
+  bubble.innerHTML = escapeHtml(texto).replace(/\*(.+?)\*/g, '<b>$1</b>');
   wrap.appendChild(bubble);
   messagesEl.appendChild(wrap);
   messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
 }
 
 function showTyping() {
@@ -105,32 +308,34 @@ function renderQuick(ops = []) {
   });
 }
 
+/* fala da Sofia com digitação simulada */
+function botSay(texto, quick = []) {
+  renderQuick([]);
+  showTyping();
+  const delay = Math.min(550 + texto.length * 9, 1900);
+  setTimeout(() => { hideTyping(); addMsg(texto, 'bot'); renderQuick(quick); }, delay);
+}
+
+/* usuário envia */
 function enviar(texto) {
   texto = (texto || '').trim();
   if (!texto) return;
   addMsg(texto, 'user');
   inputEl.value = '';
   renderQuick([]);
-
-  if (norm(texto).includes('confirmar transferencia')) {
-    showTyping();
-    setTimeout(() => { hideTyping(); addMsg('Pronto! Você está na fila para atendimento humano. Tempo médio de espera: ~2 min. Obrigada pela paciência. 💙', 'bot'); }, 1000);
-    return;
-  }
-
-  const { texto: resp, quick } = responder(texto);
-  showTyping();
-  const delay = Math.min(600 + resp.length * 11, 2000);
-  setTimeout(() => { hideTyping(); addMsg(resp, 'bot'); renderQuick(quick); }, delay);
+  setTimeout(() => process(texto), 250);
 }
 
+/* transbordo humano */
 function transferHuman() {
-  addMsg('Falar com atendente', 'user');
-  showTyping();
-  setTimeout(() => { hideTyping(); addMsg('Sem problemas! 😊 Vou te encaminhar a um(a) atendente. Antes, me diz rapidamente o motivo do contato para já adiantar à equipe.', 'bot'); renderQuick(['Agendamento', 'Resultado', 'Reclamação', 'Outro assunto']); }, 900);
+  botSay('Sem problemas! 😊 Para adiantar à equipe, me diz rapidamente o motivo do contato:', ['Agendamento', 'Resultado', 'Reclamação', 'Outro assunto']);
+  state.flow = 'transbordo';
+}
+function filaHumano() {
+  botSay('Pronto! Você está na fila para atendimento humano. 👤\nTempo médio de espera: ~2 minutos. Obrigada pela paciência! 💙', []);
 }
 
-/* ---------- Abrir/fechar widget ---------- */
+/* ===================== WIDGET ===================== */
 function openChat() {
   $('#chatWindow').classList.remove('hidden');
   $('#chatWindow').classList.add('flex');
@@ -143,27 +348,23 @@ function closeChat() {
   $('#chatWindow').classList.remove('flex');
   $('#chatFab').classList.remove('hidden');
 }
-
 function greet() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMsg('Olá! 😊 Eu sou a Sofia, assistente virtual do Fleury.\nPosso ajudar com agendamentos, resultados, preparo de exames, convênios e mais — 24h por dia. Como posso te ajudar?', 'bot');
-    renderQuick(['Agendar exame', 'Resultado de exames', 'Preparo de exame', 'Convênios']);
+    addMsg('Olá! 😊 Eu sou a *Sofia*, assistente virtual do Fleury.\nPosso te ajudar com agendamentos, resultados, preparo de exames, convênios e unidades — 24h por dia. Por onde começamos?', 'bot');
+    renderQuick(HOME);
   }, 800);
 }
 
 $('#composer').addEventListener('submit', (e) => { e.preventDefault(); enviar(inputEl.value); });
 window.openChat = openChat;
 window.closeChat = closeChat;
-window.transferHuman = transferHuman;
+window.transferHuman = () => { openChat(); state.flow = null; addMsg('Falar com atendente', 'user'); transferHuman(); };
 
-/* ---------- Animações de scroll (reveal + contadores) ---------- */
+/* ===================== ANIMAÇÕES DE SCROLL ===================== */
 const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
-
-// JS ativo: remove o failsafe "no-js" para permitir as animações
 document.documentElement.classList.remove('no-js');
-
 try {
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
@@ -176,25 +377,17 @@ try {
       });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal, .counter').forEach((el) => io.observe(el));
-  } else {
-    revealAll();
-    document.querySelectorAll('.counter').forEach(animateCounter);
-  }
-} catch (err) {
-  revealAll();
-}
-
-// rede de segurança: garante que nada fique invisível após o carregamento
+  } else { revealAll(); document.querySelectorAll('.counter').forEach(animateCounter); }
+} catch (err) { revealAll(); }
 window.addEventListener('load', () => setTimeout(revealAll, 1200));
 
 function animateCounter(el) {
   if (el.dataset.done) return;
   el.dataset.done = '1';
   const target = +el.dataset.target;
-  const dur = 1200;
   const start = performance.now();
   const step = (now) => {
-    const p = Math.min((now - start) / dur, 1);
+    const p = Math.min((now - start) / 1200, 1);
     el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
     if (p < 1) requestAnimationFrame(step);
   };
